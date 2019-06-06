@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 
@@ -21,6 +22,7 @@ var dao = TasksDAO{}
 func AllTasksEndPoint(w http.ResponseWriter, r *http.Request) {
 	tasks, err := dao.FindAll()
 	if err != nil {
+		fmt.Println(err)
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
@@ -33,6 +35,7 @@ func FindTaskByNameEndpoint(w http.ResponseWriter, r *http.Request) {
 
 	task, err := dao.FindByName(params["name"])
 	if err != nil {
+		fmt.Println(err)
 		respondWithError(w, http.StatusBadRequest, "Invalid Task name")
 	}
 	respondWithJson(w, http.StatusOK, task)
@@ -43,6 +46,7 @@ func FindTaskByIDEndpoint(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	task, err := dao.FindById(params["id"])
 	if err != nil {
+		fmt.Println(err)
 		respondWithError(w, http.StatusBadRequest, "Invalid Task ID")
 		return
 	}
@@ -54,6 +58,7 @@ func CreateTaskEndPoint(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 	var task Task
 	if err := json.NewDecoder(r.Body).Decode(&task); err != nil {
+		fmt.Println(err)
 		respondWithError(w, http.StatusBadRequest, "Invalid request payload")
 		return
 	}
@@ -70,6 +75,7 @@ func UpdateTaskEndPoint(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 	var task Task
 	if err := json.NewDecoder(r.Body).Decode(&task); err != nil {
+		fmt.Println(err)
 		respondWithError(w, http.StatusBadRequest, "Invalid request payload")
 		return
 	}
@@ -85,10 +91,12 @@ func DeleteTaskEndPoint(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 	var task Task
 	if err := json.NewDecoder(r.Body).Decode(&task); err != nil {
+		fmt.Println(err)
 		respondWithError(w, http.StatusBadRequest, "Invalid request payload")
 		return
 	}
 	if err := dao.Delete(task); err != nil {
+		fmt.Println(err)
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
