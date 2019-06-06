@@ -27,8 +27,19 @@ func AllTasksEndPoint(w http.ResponseWriter, r *http.Request) {
 	respondWithJson(w, http.StatusOK, tasks)
 }
 
+// GET a task by its name
+func FindTaskByNameEndpoint(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+
+	task, err := dao.FindByName(params["name"])
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, "Invalid Task name")
+	}
+	respondWithJson(w, http.StatusOK, task)
+}
+
 // GET a task by its ID
-func FindTaskEndpoint(w http.ResponseWriter, r *http.Request) {
+func FindTaskByIDEndpoint(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	task, err := dao.FindById(params["id"])
 	if err != nil {
@@ -111,7 +122,8 @@ func main() {
 	r.HandleFunc("/tasks", CreateTaskEndPoint).Methods("POST")
 	r.HandleFunc("/tasks", UpdateTaskEndPoint).Methods("PUT")
 	r.HandleFunc("/tasks", DeleteTaskEndPoint).Methods("DELETE")
-	r.HandleFunc("/tasks/{id}", FindTaskEndpoint).Methods("GET")
+	r.HandleFunc("/tasks/id/{id}", FindTaskByIDEndpoint).Methods("GET")
+	r.HandleFunc("/tasks/name/{name}", FindTaskByNameEndpoint).Methods("GET")
 	if err := http.ListenAndServe(":3000", r); err != nil {
 		log.Fatal(err)
 	}

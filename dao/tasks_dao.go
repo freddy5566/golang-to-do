@@ -36,6 +36,13 @@ func (t *TasksDAO) FindAll() ([]Task, error) {
 	return tasks, err
 }
 
+// Find a task bt its name
+func (t *TasksDAO) FindByName(name string) (Task, error) {
+	var task Task
+	err := db.C(COLLECTION).Find(bson.M{"name": name}).One(&task)
+	return task, err
+}
+
 // Find a task by its id
 func (t *TasksDAO) FindById(id string) (Task, error) {
 	var task Task
