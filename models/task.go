@@ -6,6 +6,7 @@ import "gopkg.in/mgo.v2/bson"
 // the properties in mongodb document
 type Task struct {
 	ID          bson.ObjectId `bson:"_id" json:"id"`
+	Done        bool          `bson:"done" json:"done"`
 	Name        string        `bson:"name" json:"name"`
 	Description string        `bson:"description" json:"description"`
 	Priority    string        `bson:"priority" json:"priority"`
